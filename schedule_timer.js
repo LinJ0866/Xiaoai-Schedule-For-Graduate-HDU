@@ -1,9 +1,10 @@
 /**
  * 时间配置函数，此为入口函数，不要改动函数名
  */
-async function scheduleTimer({providerRes,parserRes} = {}) {
+async function scheduleTimer({providerRes, parserRes} = {}) {
     let showWeekend = false
     let maxWeek = 0
+    // 检查周末与学期周次
     for (let classItem of parserRes) {
         if (classItem.day > 5) {
             showWeekend = true
@@ -11,27 +12,28 @@ async function scheduleTimer({providerRes,parserRes} = {}) {
         maxWeek = Math.max(maxWeek, classItem.weeks[classItem.weeks.length-1])
     }
 
-    weekList = ['未开学']
-    for (let i = 1; i <= maxWeek; i++) {
-        weekList.push(String(i))
-    }
-    const currentWeek = await AIScheduleSelect({
-        // titleText: '提示', // 标题内容，字体比较大，超过10个字不给显示的喔，也可以不传就不显示
-        contentText: '本周为第几周？', // 提示信息，字体稍小，支持使用``达到换行效果，具体使用效果建议真机测试，为必传，不传显示版本号
-        selectList: weekList
-    })
-    startSemeter = ''
-    if (currentWeek != '未开学') {
-        let now =new Date();
-        let nowTime =now.getTime();
-        let day =now.getDay();
-        const oneDayTime =24*60*60*1000;
-        startSemeter =nowTime - ((day+6)%7+(currentWeek-1)*7)*oneDayTime
-    }
+    // weekList = ['未开学']
+    // for (let i = 1; i <= maxWeek; i++) {
+    //     weekList.push(String(i))
+    // }
+    
+    // const currentWeek = await AIScheduleSelect({
+    //     titleText: '选择周次', // 标题内容，字体比较大，超过10个字不给显示的喔，也可以不传就不显示
+    //     contentText: '本周为第几周？', // 提示信息，字体稍小，支持使用``达到换行效果，具体使用效果建议真机测试，为必传，不传显示版本号
+    //     selectList: weekList
+    // })
+    // startsemester = ''
+    // if (currentWeek != '未开学') {
+    //     let now =new Date();
+    //     let nowTime =now.getTime();
+    //     let day =now.getDay();
+    //     const oneDayTime =24*60*60*1000;
+    //     startsemester =(nowTime - ((day+6)%7+(currentWeek-1)*7)*oneDayTime).toString()
+    // }
 
     return {
         totalWeek: maxWeek, // 总周数：[1, 30]之间的整数
-        startSemester: startSemeter, // 开学时间：时间戳，13位长度字符串，推荐用代码生成
+        startSemester: '', // 开学时间：时间戳，13位长度字符串，推荐用代码生成
         startWithSunday: false, // 是否是周日为起始日，该选项为true时，会开启显示周末选项
         showWeekend: showWeekend, // 是否显示周末
         forenoon: 5, // 上午课程节数：[1, 10]之间的整数
