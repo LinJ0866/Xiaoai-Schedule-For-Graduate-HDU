@@ -8,30 +8,31 @@ var weekDayNumer = {
     '日': 7,
 }
 
-function generateList(range, stride) {
+function generateList(range, even, odd) {
     let res = []
     let start = parseInt(range[0])
     let end = parseInt(range[1])
-    for (let i = start; i <= end; i+=stride) {
-        res.push(i)
+    for (let i = start; i <= end; i+=1) {
+        if ((even && i % 2 == 1) || odd && i % 2 == 0) {
+            res.push(i)
+        }
     }
     return res
 }
 
 // 返回 周次，星期，节次
 function parseTime(str) {
-    console.log(str)
+    // console.log(str)
     let reg = /第(\d+)-(\d+)周（([\u4e00-\u9fa5]+)周）星期([\u4e00-\u9fa5])第(\d+)-(\d+)节/g
     let timescope = reg.exec(str) 
 
     let weeks = []
-    if (timescope[3] == '单双') {
-        weeks = generateList([timescope[1], timescope[2]], 1)
-    } else if (timescope[3] == '单' || timescope[3] == '双') {
-        weeks = generateList([timescope[1], timescope[2]], 2)
-    }
+    const even = timescope[3].indexOf('单') != -1
+    const odd = timescope[3].indexOf('双') != -1
 
-    return [weeks, weekDayNumer[timescope[4]], generateList([timescope[5], timescope[6]], 1)]
+    weeks = generateList([timescope[1], timescope[2]], even, odd)
+
+    return [weeks, weekDayNumer[timescope[4]], generateList([timescope[5], timescope[6]], true, true)]
 }
 
 // 入口函数
